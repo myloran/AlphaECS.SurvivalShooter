@@ -1,110 +1,70 @@
 ﻿using UniRx;
 using UnityEngine;
 using AlphaECS.Unity;
-using AlphaECS;
 using System;
-using Zenject;
 
-namespace AlphaECS.SurvivalShooter
-{
-	public class Shooting : SystemBehaviour
-	{
-		Ray ShotRay;
-		RaycastHit ShotRaycastHit;
-		int ShootableMask;
-			
-		public override void Initialize (IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
-		{
-			base.Initialize (eventSystem, poolManager, groupFactory);
+namespace AlphaECS.SurvivalShooter {
+    public class Shooting : SystemBehaviour {
+        Ray ray;//-
+        RaycastHit hit;//-
+        int mask;//-
 
-			ShootableMask = LayerMask.GetMask("Shootable");
+        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
+            base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-			var shooters = GroupFactory.Create(new Type[] { typeof(View), typeof(Shooter) });
+            mask = LayerMask.GetMask("Shootable");
+            var shooters = GroupFactory.Create(new Type[] { typeof(View), typeof(Shooter) });
+            shooters.OnAdd().Subscribe(player => {
+                var view = player.Get<View>();//-
+                var transform = view.Transforms[0];//-
+                var shooter = player.Get<Shooter>();//-
+                shooter.IsShooting = new BoolReactiveProperty();
 
-			shooters.OnAdd().Subscribe (entity =>
-			{
-				var viewComponent = entity.Get<View> ();
-				var targetTransform = viewComponent.Transforms[0];
-				var shooter = entity.Get<Shooter> ();
-				shooter.IsShooting = new BoolReactiveProperty ();
+                var gun = transform.Find("GunBarrelEnd");//there must be a better solution??? 
+                var particle = gun.GetComponent<ParticleSystem>();//-
+                var line = gun.GetComponent<LineRenderer>();//-
+                var audio = gun.GetComponent<AudioSource>();//-
+                var light = gun.GetComponent<Light>();//-
 
-				var gunBarrel = targetTransform.Find("GunBarrelEnd");
-				var shotParticles = gunBarrel.GetComponent<ParticleSystem> ();
-				var shotLine = gunBarrel.GetComponent <LineRenderer> ();
-				var shotAudio = gunBarrel.GetComponent<AudioSource> ();
-				var shotLight = gunBarrel.GetComponent<Light> ();
+                shooter.IsShooting.DistinctUntilChanged().Subscribe(isShooting => {
+                    if (isShooting) {
+                        shooter.Shoot = Observable.Timer(TimeSpan.FromSeconds(0f), 
+                            TimeSpan.FromSeconds(1f / shooter.ShotsPerSecond)).
+                            Subscribe(_ => {
+                                ray.origin = gun.position;
+                                ray.direction = gun.forward;
 
-				shooter.IsShooting.DistinctUntilChanged ().Subscribe (value =>
-				{
-					if(value == true)
-					{
-						// handle shooting
-						var delay = TimeSpan.FromSeconds(0f);
-						var interval = TimeSpan.FromSeconds(1f / shooter.ShotsPerSecond);
-						shooter.Shoot = Observable.Timer(delay, interval).Subscribe(_ =>
-						{
-							ShotRay.origin = gunBarrel.position;
-							ShotRay.direction = gunBarrel.forward;
+                                if (Physics.Raycast(ray, out hit, shooter.Range, mask)) {
+                                    var targetView = hit.collider.GetComponent<EntityBehaviour>();
+                                    if (targetView?.Entity.Get<Health>() != null) {
+                                        EventSystem.Publish(new Damaged(player, targetView.Entity, shooter.Damage, hit.point));
+                                    }
+                                    line.SetPosition(1, hit.point);
+                                } else line.SetPosition(1, ray.origin + ray.direction * shooter.Range);
 
-							if (Physics.Raycast (ShotRay, out ShotRaycastHit, shooter.Range, ShootableMask))
-							{
-								var targetView = ShotRaycastHit.collider.GetComponent <EntityBehaviour> ();
-								if (targetView != null)
-								{
-									var targetHealth = targetView.Entity.Get<Health> ();
-									if (targetHealth != null)
-									{
-										EventSystem.Publish (new Damaged (entity, targetView.Entity, shooter.Damage, ShotRaycastHit.point));
-									}
-								}
+                                audio.Play();//separate fx system
+                                light.enabled = true;
+                                particle.Stop();
+                                particle.Play();
+                                line.enabled = true;
+                                line.SetPosition(0, gun.position);
 
-								shotLine.SetPosition (1, ShotRaycastHit.point);
-							}
-							else
-							{
-								shotLine.SetPosition (1, ShotRay.origin + ShotRay.direction * shooter.Range);
-							}
+                                Observable.Timer(TimeSpan.FromSeconds((1f / shooter.ShotsPerSecond) / 2f)).Subscribe(__ => {
+                                    line.enabled = false;
+                                    light.enabled = false;
+                                }).AddTo(Disposer).AddTo(view.Disposer);
+                        }).AddTo(Disposer).AddTo(shooter.Disposer);
+                    } else shooter.Shoot?.Dispose();
+                }).AddTo(Disposer).AddTo(shooter.Disposer);
+            }).AddTo(Disposer);
 
-							// handle fx
-							shotAudio.Play ();
-							shotLight.enabled = true;
-							shotParticles.Stop ();
-							shotParticles.Play ();
-							shotLine.enabled = true;
-							shotLine.SetPosition (0, gunBarrel.position);
-
-							// disable the shot and/or fx after some arbitrary duration
-							var shotDuration = TimeSpan.FromSeconds((1f / shooter.ShotsPerSecond) / 2f);
-							Observable.Timer(shotDuration).Subscribe(_2 =>
-							{
-								shotLine.enabled = false;
-								shotLight.enabled = false;	
-							}).AddTo(this.Disposer).AddTo(viewComponent.Disposer);
-						}).AddTo(this.Disposer).AddTo(shooter.Disposer);
-					}
-					else
-					{
-						if(shooter.Shoot != null)
-							shooter.Shoot.Dispose();
-					}
-				}).AddTo(this.Disposer).AddTo(shooter.Disposer);	
-			}).AddTo (this.Disposer);
-
-			Observable.EveryUpdate().Subscribe(_ =>
-			{
-				foreach(var entity in shooters.Entities)
-				{
-					var shooter = entity.Get<Shooter> ();
-					if (Input.GetButton ("Fire1"))
-					{
-						shooter.IsShooting.Value = true;
-					}
-					else
-					{
-						shooter.IsShooting.Value = false;
-					}
-				}
-			}).AddTo(this.Disposer);
-		}
-	}
+            Observable.EveryUpdate().Subscribe(_ => {//input system
+                foreach (var player in shooters.Entities) {
+                    var shooter = player.Get<Shooter>();//-
+                    if (Input.GetButton("Fire1")) shooter.IsShooting.Value = true;
+                    else shooter.IsShooting.Value = false;
+                }
+            }).AddTo(Disposer);
+        }
+    }
 }

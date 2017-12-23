@@ -5,13 +5,13 @@ namespace AlphaECS.SurvivalShooter {
         public IEntity Attacker { get; set; }
         public IEntity Target { get; set; }
         public int DamageAmount { get; private set; }
-        public Vector3 HitPoint { get; private set; }
+        public Vector3 Position { get; private set; }
 
-        public Damaged(IEntity attacker, IEntity target, int damageAmount, Vector3 hitPoint) {//-
+        public Damaged(IEntity attacker, IEntity target, int damageAmount, Vector3 position) {//-
             Attacker = attacker;//-
             Target = target;//-
             DamageAmount = damageAmount;//-
-            HitPoint = hitPoint;//-
+            Position = position;//-
         }//-
     }
 }

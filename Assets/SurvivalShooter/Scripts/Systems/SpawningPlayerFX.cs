@@ -9,66 +9,45 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace AlphaECS.SurvivalShooter
-{
-	public class SpawningPlayerFX : SystemBehaviour
-	{
-		public Slider HealthSlider;
-		public Image DamageImage;
-		public float FlashSpeed = 5f;
-		public Color FlashColor = new Color(1f, 0f, 0f, 0.1f);
+namespace AlphaECS.SurvivalShooter {
+    public class SpawningPlayerFX : SystemBehaviour {
+        public Slider HealthSlider;//-
+        public Image DamageImage;//-
+        public float FlashSpeed = 5f;//-
+        public Color FlashColor = new Color(1f, 0f, 0f, 0.1f);//-
 
-		[Inject]
-		public Deads deads { get; set; }
-			
-		public override void Initialize (IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
-		{
-			base.Initialize (eventSystem, poolManager, groupFactory);
+        [Inject]
+        public Deads deads { get; set; }
 
-			var group = GroupFactory.Create(new Type[] { typeof(View), typeof(Health), typeof(AxisInput), typeof(Animator) });
-			group.OnAdd().Subscribe (entity =>
-			{
-				var viewComponent = entity.Get<View>();
-				var targetTransform = viewComponent.Transforms[0];
-				var health = entity.Get<Health> ();
-				var previousValue = health.Current.Value;
+        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
+            base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-				var audioSources = targetTransform.GetComponentsInChildren<AudioSource>();
-				var hurtSound = audioSources.Where(audioSource => audioSource.clip.name.Contains("Hurt")).FirstOrDefault();
+            var group = GroupFactory.Create(new Type[] { typeof(View), typeof(Health), typeof(AxisInput), typeof(Animator) });
+            group.OnAdd().Subscribe(player => {
+                var health = player.Get<Health>();//-
+                var previousHealth = health.Current.Value;
 
-				health.Current.DistinctUntilChanged ().Subscribe (value =>
-				{
-					// if you got hurt and are still alive...
-					if(value < previousValue && value >= 0)
-					{
-						if(DamageImage != null)
-						{
-							DamageImage.color = FlashColor;
-							DOTween.To (() => DamageImage.color, x => DamageImage.color = x, Color.clear, FlashSpeed);
-						}
-	
-						hurtSound.Play();				
-					}
+                health.Current.DistinctUntilChanged().Subscribe(currentHealth => {
+                    if (currentHealth < previousHealth && currentHealth >= 0) {
+                        if (DamageImage != null) {
+                            DamageImage.color = FlashColor;
+                            DOTween.To(() => DamageImage.color, x => DamageImage.color = x, Color.clear, FlashSpeed);
+                        }
+                        player.Get<View>().Transforms[0].GetComponentsInChildren<AudioSource>().
+                            Where(audioSource => audioSource.clip.name.Contains("Hurt")).
+                            FirstOrDefault().Play();
+                    }
+                    HealthSlider.value = currentHealth;
+                    previousHealth = currentHealth;
+                }).AddTo(Disposer).AddTo(health.Disposer);
+            }).AddTo(Disposer);
 
-					HealthSlider.value = value;
-					previousValue = value;
-				}).AddTo(this.Disposer).AddTo(health.Disposer);
-			}).AddTo(this.Disposer);
-
-			deads.OnAdd ().Subscribe (entity =>
-			{
-				if(entity.Has<AxisInput>() == false)
-					return;
-				
-				var viewComponent = entity.Get<View>();
-				var animator = entity.Get<Animator>();
-
-				var audioSources = viewComponent.Transforms[0].GetComponentsInChildren<AudioSource>();
-				var deathSound = audioSources.Where(audioSource => audioSource.clip.name.Contains("Death")).FirstOrDefault();
-				animator.SetTrigger ("Die");
-				deathSound.Play();
-
-			}).AddTo (this.Disposer);
-		}
-	}
+            deads.OnAdd().Where(dead => dead.Has<AxisInput>()).Subscribe(dead => {
+                dead.Get<Animator>().SetTrigger("Die");
+                dead.Get<View>().Transforms[0].GetComponentsInChildren<AudioSource>().
+                    Where(audioSource => audioSource.clip.name.Contains("Death")).
+                    FirstOrDefault().Play();
+            }).AddTo(Disposer);
+        }
+    }
 }
