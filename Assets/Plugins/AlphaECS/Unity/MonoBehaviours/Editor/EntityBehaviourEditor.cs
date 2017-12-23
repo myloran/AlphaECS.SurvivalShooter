@@ -149,7 +149,7 @@ namespace AlphaECS
                 if(componentToRemove > -1)
                 {
                     var component = view.Entity.Components.ElementAt(componentToRemove);
-                    view.Entity.RemoveComponent(component);
+                    view.Entity.Remove(component);
 
                     if (component.GetType().IsSubclassOf(typeof(Component)))
                     {

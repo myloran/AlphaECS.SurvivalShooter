@@ -96,19 +96,19 @@ namespace AlphaECS
 
 			foreach (IEntity entity in EntityPool.Entities)
 			{
-				if (entity.HasComponents (Components.ToArray ()))
+				if (entity.Has (Components.ToArray ()))
 				{
 					cachedEntities.Add(entity);
 				}
 			}
 
-			EventSystem.OnEvent<EntityAddedEvent> ().Where (_ => _.Entity.HasComponents (Components.ToArray()) && cachedEntities.Contains(_.Entity) == false).Subscribe (_ =>
+			EventSystem.OnEvent<EntityAddedEvent> ().Where (_ => _.Entity.Has (Components.ToArray()) && cachedEntities.Contains(_.Entity) == false).Subscribe (_ =>
 			{ cachedEntities.Add(_.Entity); }).AddTo(this);
 
 			EventSystem.OnEvent<EntityRemovedEvent> ().Where (_ => cachedEntities.Contains(_.Entity)).Subscribe (_ =>
 			{ cachedEntities.Remove(_.Entity); }).AddTo(this);
 
-			EventSystem.OnEvent<ComponentAddedEvent> ().Where (_ => _.Entity.HasComponents (Components.ToArray()) && cachedEntities.Contains(_.Entity) == false).Subscribe (_ =>
+			EventSystem.OnEvent<ComponentAddedEvent> ().Where (_ => _.Entity.Has (Components.ToArray()) && cachedEntities.Contains(_.Entity) == false).Subscribe (_ =>
 			{ cachedEntities.Add(_.Entity); }).AddTo(this);
 
 			EventSystem.OnEvent<ComponentRemovedEvent> ().Where (_ => Components.Contains(_.Component.GetType()) && cachedEntities.Contains(_.Entity)).Subscribe (_ =>

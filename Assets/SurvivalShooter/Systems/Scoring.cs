@@ -6,7 +6,7 @@ using System;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class ScoringSystem : SystemBehaviour
+	public class Scoring : SystemBehaviour
 	{
 		public IntReactiveProperty Score { get; private set; }
 
@@ -16,7 +16,7 @@ namespace AlphaECS.SurvivalShooter
 
 			Score = new IntReactiveProperty ();
 
-			EventSystem.OnEvent<DeathEvent> ().Where (_ => !_.Target.HasComponent<InputComponent> ()).Subscribe (_ =>
+			EventSystem.OnEvent<Died> ().Where (_ => !_.Target.Has<AxisInput> ()).Subscribe (_ =>
 			{
 				Score.Value++;
 			}).AddTo (this);

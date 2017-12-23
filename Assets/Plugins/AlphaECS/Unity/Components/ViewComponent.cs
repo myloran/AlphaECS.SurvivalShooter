@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace AlphaECS.Unity
 {
-    public class ViewComponent : ComponentBase
+    public class View : ComponentBase
 	{
 		public ReactiveCollection<Transform> Transforms = new ReactiveCollection<Transform>();
-		public ViewComponent() { }
+		public View() { }
 	}
 }

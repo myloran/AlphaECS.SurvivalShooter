@@ -10,16 +10,16 @@ namespace AlphaECS
         string Id { get; }
 		IEnumerable<object> Components { get; }
 
-		object AddComponent(object component);
-		T AddComponent<T> () where T : class, new(); 
-		void RemoveComponent(object component);
-        void RemoveComponent<T>() where T : class;
-        void RemoveAllComponents();
-        T GetComponent<T>() where T : class;
-		object GetComponent (Type type);
+		object Add(object component);
+		T Add<T> () where T : class, new(); 
+		void Remove(object component);
+        void Remove<T>() where T : class;
+        void RemoveAll();
+        T Get<T>() where T : class;
+		object Get (Type type);
 
-        bool HasComponent<T>() where T : class;
-		bool HasComponent(Type componentType);
-        bool HasComponents(params Type[] component);
+        bool Has<T>() where T : class;
+		bool Has(Type componentType);
+        bool Has(params Type[] component);
     }
 }

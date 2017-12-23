@@ -11,12 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1718ac708b348dbaf343fe1c40d7d8, type: 3}
   m_Name: HellephantBlueprint
   m_EditorClassIdentifier: 
-  Health:
+  health:
     StartingHealth: 300
     CurrentHealth:
       value: 0
     IsDamaged: 0
-  Melee:
+  melee:
     Damage: 30
     AttacksPerSecond: 1
     TargetInRange:

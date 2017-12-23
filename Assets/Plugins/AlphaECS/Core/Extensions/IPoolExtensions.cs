@@ -9,14 +9,14 @@ namespace AlphaECS
         public static void RemoveEntitiesContaining<T>(this IPool pool)
             where T : class, IComponent
         {
-            pool.Entities.Where(entity => entity.HasComponent<T>())
+            pool.Entities.Where(entity => entity.Has<T>())
                 .ToArray()
                 .ForEachRun(pool.RemoveEntity);
         }
 
         public static void RemoveEntitiesContaining(this IPool pool, params Type[] components)
         {
-            pool.Entities.Where(entity => components.Any(x => entity.HasComponents(x)))
+            pool.Entities.Where(entity => components.Any(x => entity.Has(x)))
                 .ToArray()
                 .ForEachRun(pool.RemoveEntity);
         }

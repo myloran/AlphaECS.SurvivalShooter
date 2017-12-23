@@ -11,13 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd1718ac708b348dbaf343fe1c40d7d8, type: 3}
   m_Name: ZomBunnyBlueprint
   m_EditorClassIdentifier: 
-  Health:
-    StartingHealth: 100
+  health:
+    StartingHealth: 50
     CurrentHealth:
       value: 0
     IsDamaged: 0
-  Melee:
-    Damage: 10
-    AttacksPerSecond: 2
+  melee:
+    Damage: 5
+    AttacksPerSecond: 3
     TargetInRange:
       value: 0

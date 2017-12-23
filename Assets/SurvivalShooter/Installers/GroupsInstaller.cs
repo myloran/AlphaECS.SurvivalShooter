@@ -6,6 +6,6 @@ public class GroupsInstaller : MonoInstaller<GroupsInstaller>
 {
     public override void InstallBindings()
     {
-		Container.Bind<DeadEntities>().To<DeadEntities>().AsSingle();
+		Container.Bind<Deads>().To<Deads>().AsSingle();
     }
 }

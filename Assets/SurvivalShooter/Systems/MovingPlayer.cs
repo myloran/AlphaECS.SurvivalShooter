@@ -8,7 +8,7 @@ using AlphaECS;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class PlayerMovementSystem : SystemBehaviour
+	public class MovingPlayer : SystemBehaviour
 	{
 		public readonly float MovementSpeed = 2.0f;
 		private int FloorMask;
@@ -19,13 +19,13 @@ namespace AlphaECS.SurvivalShooter
 
 			FloorMask = LayerMask.GetMask("Floor");
 
-			var group = GroupFactory.Create(new Type[] { typeof(ViewComponent), typeof(InputComponent), typeof(Rigidbody) });
+			var group = GroupFactory.Create(new Type[] { typeof(View), typeof(AxisInput), typeof(Rigidbody) });
 
 			Observable.EveryFixedUpdate ().Subscribe (_ =>
 			{
 				foreach(var entity in group.Entities)
 				{
-					var input = entity.GetComponent<InputComponent> ();
+					var input = entity.Get<AxisInput> ();
 					input.Horizontal.Value = Input.GetAxisRaw("Horizontal");
 					input.Vertical.Value = Input.GetAxisRaw("Vertical");
 
@@ -33,7 +33,7 @@ namespace AlphaECS.SurvivalShooter
 					movement.Set(input.Horizontal.Value, 0f, input.Vertical.Value);
 					var speed = 6f;
 					movement = movement.normalized * speed * Time.deltaTime;
-					var rb = entity.GetComponent<Rigidbody>();
+					var rb = entity.Get<Rigidbody>();
 					rb.MovePosition(rb.transform.position + movement);
 
 					// execute turning

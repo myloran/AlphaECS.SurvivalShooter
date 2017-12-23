@@ -24,7 +24,7 @@ namespace AlphaECS
 			_components = new Dictionary<Type, object>();
         }
 
-		public object AddComponent(object component)
+		public object Add(object component)
         {
 			//TODO not sure this should be silently returning this way... 
 			//... ideally we should be returning the component and able to check for null elsewhere
@@ -39,10 +39,10 @@ namespace AlphaECS
 			return component;
         }
 
-		public T AddComponent<T>() where T : class, new()
-		{ return (T)AddComponent(new T()); }
+		public T Add<T>() where T : class, new()
+		{ return (T)Add(new T()); }
 
-		public void RemoveComponent(object component)
+		public void Remove(object component)
         {
             if(!_components.ContainsKey(component.GetType())) { return; }
 
@@ -53,29 +53,29 @@ namespace AlphaECS
             EventSystem.Publish(new ComponentRemovedEvent(this, component));
         }
 
-		public void RemoveComponent<T>() where T : class
+		public void Remove<T>() where T : class
         {
-            if(!HasComponent<T>()) { return; }
+            if(!Has<T>()) { return; }
 
-            var component = GetComponent<T>();
-            RemoveComponent(component);
+            var component = Get<T>();
+            Remove(component);
         }
 
-        public void RemoveAllComponents()
+        public void RemoveAll()
         {
             var components = Components.ToArray();
-            components.ForEachRun(RemoveComponent);
+            components.ForEachRun(Remove);
         }
 
-		public bool HasComponent<T>() where T : class
+		public bool Has<T>() where T : class
         { return _components.ContainsKey(typeof(T)); }
 
-		public bool HasComponent(Type componentType)
+		public bool Has(Type componentType)
 		{
 			return _components.ContainsKey(componentType);
 		}
 
-        public bool HasComponents(params Type[] componentTypes)
+        public bool Has(params Type[] componentTypes)
         {
             if(_components.Count == 0)
             { return false; }
@@ -83,7 +83,7 @@ namespace AlphaECS
             return componentTypes.All(x => _components.ContainsKey(x));
         }
 
-		public T GetComponent<T>() where T : class
+		public T Get<T>() where T : class
         {
 			var type = typeof(T);
 			if (_components.ContainsKey (type))
@@ -95,7 +95,7 @@ namespace AlphaECS
 			}
 		}
 
-		public object GetComponent(Type type)
+		public object Get(Type type)
 		{
 			if (_components.ContainsKey (type))
 			{
@@ -108,6 +108,6 @@ namespace AlphaECS
 		}
 
 		public void Dispose()
-		{ RemoveAllComponents(); }
+		{ RemoveAll(); }
     }
 }

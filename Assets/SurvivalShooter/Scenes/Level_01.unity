@@ -3410,10 +3410,11 @@ MonoBehaviour:
   - {fileID: 1384153777}
   _installerPrefabs: []
   _scriptableObjectInstallers: []
+  _autoRun: 1
   _parentNewObjectsUnderRoot: 0
   _contractNames: []
   _parentContractName: 
-  _autoRun: 1
+  _parentContractNames: []
 --- !u!114 &1384153777
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3979,8 +3980,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 137785977}
-  Smoothing: 5
   Offset: {x: 0, y: 0, z: 0}
+  Smoothing: 5
 --- !u!114 &1620760240
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4900,6 +4901,31 @@ Prefab:
     - target: {fileID: 4362250334424404, guid: 0c59860f57f864993a346bfafe7df61f, type: 2}
       propertyPath: m_RootOrder
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
+        type: 2}
+      propertyPath: ComponentTypes.Array.data[0]
+      value: AlphaECS.SurvivalShooter.Health
+      objectReference: {fileID: 0}
+    - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
+        type: 2}
+      propertyPath: ComponentTypes.Array.data[1]
+      value: AlphaECS.SurvivalShooter.AxisInput
+      objectReference: {fileID: 0}
+    - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
+        type: 2}
+      propertyPath: ComponentTypes.Array.data[2]
+      value: AlphaECS.SurvivalShooter.Shooter
+      objectReference: {fileID: 0}
+    - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
+        type: 2}
+      propertyPath: ComponentData.Array.data[0]
+      value: '{"CurrentHealth":{"value":0},"StartingHealth":100,"IsDamaged":false}'
+      objectReference: {fileID: 0}
+    - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
+        type: 2}
+      propertyPath: ComponentData.Array.data[2]
+      value: '{"IsShooting":{"value":false},"Damage":10,"Range":10.0,"ShotsPerSecond":10.0}'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0c59860f57f864993a346bfafe7df61f, type: 2}

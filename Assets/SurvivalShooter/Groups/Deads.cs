@@ -8,15 +8,15 @@ using UniRx;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class DeadEntities : Group
+	public class Deads : Group
 	{
 		public override void Initialize (IEventSystem eventSystem, IPoolManager poolManager)
 		{
-			Components = new Type[] { typeof(HealthComponent) };
+			Components = new Type[] { typeof(Health) };
 
 			Func<IEntity, ReactiveProperty<bool>> checkIsDead = (e) =>
 			{
-				var health = e.GetComponent<HealthComponent> ();
+				var health = e.Get<Health> ();
 				health.CurrentHealth.Value = health.StartingHealth;
 
 				var isDead = health.CurrentHealth.DistinctUntilChanged ().Select (value => value <= 0).ToReactiveProperty();

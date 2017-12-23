@@ -8,7 +8,7 @@ using AlphaECS;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class SpawnSystem : SystemBehaviour
+	public class SpawningEnemy : SystemBehaviour
 	{
 		// TODO remove this in favor of a factory...
 		[Inject] DiContainer Container { get; set; }
@@ -17,10 +17,10 @@ namespace AlphaECS.SurvivalShooter
 		{
 			base.Initialize (eventSystem, poolManager, groupFactory);
 
-			var group = GroupFactory.Create (new Type[]{ typeof(SpawnerComponent) });
+			var group = GroupFactory.Create (new Type[]{ typeof(Spawner) });
 			group.OnAdd().Subscribe (entity =>
 			{
-				var spawner = entity.GetComponent<SpawnerComponent>();
+				var spawner = entity.Get<Spawner>();
 				var delay = TimeSpan.FromSeconds(0f);
 				var interval = TimeSpan.FromSeconds(spawner.SpawnTime);
 				Observable.Timer(delay, interval).Subscribe(_ =>

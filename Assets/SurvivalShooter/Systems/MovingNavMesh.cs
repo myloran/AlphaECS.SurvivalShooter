@@ -9,21 +9,21 @@ using UnityEngine.AI;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class NavMeshMovementSystem : SystemBehaviour
+	public class MovingNavMesh : SystemBehaviour
 	{
 		Transform Target;
-		HealthComponent TargetHealth;
+		Health TargetHealth;
 
 		public override void Initialize (IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
 		{
 			base.Initialize (eventSystem, poolManager, groupFactory);
 
-			var group = GroupFactory.Create (new Type[] { typeof(HealthComponent), typeof(ViewComponent), typeof(UnityEngine.AI.NavMeshAgent) });
+			var group = GroupFactory.Create (new Type[] { typeof(Health), typeof(View), typeof(UnityEngine.AI.NavMeshAgent) });
 			group.OnAdd().Subscribe (entity =>
 			{
-				var viewComponent = entity.GetComponent<ViewComponent>();
-				var navMeshAgent = entity.GetComponent<NavMeshAgent> ();
-				var health = entity.GetComponent<HealthComponent> ();
+				var viewComponent = entity.Get<View>();
+				var navMeshAgent = entity.Get<NavMeshAgent> ();
+				var health = entity.Get<Health> ();
 
 				Observable.EveryUpdate ().Subscribe (_ =>
 				{
@@ -37,7 +37,7 @@ namespace AlphaECS.SurvivalShooter
 						if (Target == null)
 						{ return; }
 
-						TargetHealth = Target.GetComponent<EntityBehaviour> ().Entity.GetComponent<HealthComponent> ();
+						TargetHealth = Target.GetComponent<EntityBehaviour> ().Entity.Get<Health> ();
 						if (TargetHealth == null)
 						{ return; }
 					}

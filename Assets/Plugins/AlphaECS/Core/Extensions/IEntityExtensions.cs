@@ -49,9 +49,9 @@ namespace AlphaECS
         }
 
         public static void RemoveComponents(this IEntity entity, params IComponent[] components)
-        { components.ForEachRun(entity.RemoveComponent); }
+        { components.ForEachRun(entity.Remove); }
 
         public static void RemoveComponents(this IEntity entity, IEnumerable<IComponent> components)
-        { components.ForEachRun(entity.RemoveComponent); }
+        { components.ForEachRun(entity.Remove); }
     }
 }

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class PlayerFXSystem : SystemBehaviour
+	public class SpawningPlayerFX : SystemBehaviour
 	{
 		public Slider HealthSlider;
 		public Image DamageImage;
@@ -19,18 +19,18 @@ namespace AlphaECS.SurvivalShooter
 		public Color FlashColor = new Color(1f, 0f, 0f, 0.1f);
 
 		[Inject]
-		public DeadEntities DeadEntities { get; set; }
+		public Deads deads { get; set; }
 			
 		public override void Initialize (IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
 		{
 			base.Initialize (eventSystem, poolManager, groupFactory);
 
-			var group = GroupFactory.Create(new Type[] { typeof(ViewComponent), typeof(HealthComponent), typeof(InputComponent), typeof(Animator) });
+			var group = GroupFactory.Create(new Type[] { typeof(View), typeof(Health), typeof(AxisInput), typeof(Animator) });
 			group.OnAdd().Subscribe (entity =>
 			{
-				var viewComponent = entity.GetComponent<ViewComponent>();
+				var viewComponent = entity.Get<View>();
 				var targetTransform = viewComponent.Transforms[0];
-				var health = entity.GetComponent<HealthComponent> ();
+				var health = entity.Get<Health> ();
 				var previousValue = health.CurrentHealth.Value;
 
 				var audioSources = targetTransform.GetComponentsInChildren<AudioSource>();
@@ -55,13 +55,13 @@ namespace AlphaECS.SurvivalShooter
 				}).AddTo(this.Disposer).AddTo(health.Disposer);
 			}).AddTo(this.Disposer);
 
-			DeadEntities.OnAdd ().Subscribe (entity =>
+			deads.OnAdd ().Subscribe (entity =>
 			{
-				if(entity.HasComponent<InputComponent>() == false)
+				if(entity.Has<AxisInput>() == false)
 					return;
 				
-				var viewComponent = entity.GetComponent<ViewComponent>();
-				var animator = entity.GetComponent<Animator>();
+				var viewComponent = entity.Get<View>();
+				var animator = entity.Get<Animator>();
 
 				var audioSources = viewComponent.Transforms[0].GetComponentsInChildren<AudioSource>();
 				var deathSound = audioSources.Where(audioSource => audioSource.clip.name.Contains("Death")).FirstOrDefault();

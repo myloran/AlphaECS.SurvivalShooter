@@ -7,7 +7,7 @@ using Zenject;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class ShootingSystem : SystemBehaviour
+	public class Shooting : SystemBehaviour
 	{
 		Ray ShotRay;
 		RaycastHit ShotRaycastHit;
@@ -19,13 +19,13 @@ namespace AlphaECS.SurvivalShooter
 
 			ShootableMask = LayerMask.GetMask("Shootable");
 
-			var shooters = GroupFactory.Create(new Type[] { typeof(ViewComponent), typeof(ShooterComponent) });
+			var shooters = GroupFactory.Create(new Type[] { typeof(View), typeof(Shooter) });
 
 			shooters.OnAdd().Subscribe (entity =>
 			{
-				var viewComponent = entity.GetComponent<ViewComponent> ();
+				var viewComponent = entity.Get<View> ();
 				var targetTransform = viewComponent.Transforms[0];
-				var shooter = entity.GetComponent<ShooterComponent> ();
+				var shooter = entity.Get<Shooter> ();
 				shooter.IsShooting = new BoolReactiveProperty ();
 
 				var gunBarrel = targetTransform.Find("GunBarrelEnd");
@@ -51,10 +51,10 @@ namespace AlphaECS.SurvivalShooter
 								var targetView = ShotRaycastHit.collider.GetComponent <EntityBehaviour> ();
 								if (targetView != null)
 								{
-									var targetHealth = targetView.Entity.GetComponent<HealthComponent> ();
+									var targetHealth = targetView.Entity.Get<Health> ();
 									if (targetHealth != null)
 									{
-										EventSystem.Publish (new DamageEvent (entity, targetView.Entity, shooter.Damage, ShotRaycastHit.point));
+										EventSystem.Publish (new Damaged (entity, targetView.Entity, shooter.Damage, ShotRaycastHit.point));
 									}
 								}
 
@@ -94,7 +94,7 @@ namespace AlphaECS.SurvivalShooter
 			{
 				foreach(var entity in shooters.Entities)
 				{
-					var shooter = entity.GetComponent<ShooterComponent> ();
+					var shooter = entity.Get<Shooter> ();
 					if (Input.GetButton ("Fire1"))
 					{
 						shooter.IsShooting.Value = true;

@@ -106,15 +106,15 @@ namespace AlphaECS.Unity
 		*/
 		void Awake()
 		{
-			if (!Entity.HasComponent<ViewComponent> ())
+			if (!Entity.Has<View> ())
 			{
-				var viewComponent = new ViewComponent();
+				var viewComponent = new View();
 				AddTransformToView(viewComponent);
-				Entity.AddComponent (viewComponent);
+				Entity.Add (viewComponent);
 			}
 			else
 			{
-				AddTransformToView (Entity.GetComponent<ViewComponent> ());
+				AddTransformToView (Entity.Get<View> ());
 			}
 
 			for (var i = 0; i < ComponentTypes.Count(); i++)
@@ -124,7 +124,7 @@ namespace AlphaECS.Unity
 
 				var component = (object)Activator.CreateInstance(type);
 				JsonUtility.FromJsonOverwrite(ComponentData[i], component);
-				Entity.AddComponent(component);
+				Entity.Add(component);
 			}
 
 
@@ -149,7 +149,7 @@ namespace AlphaECS.Unity
 				else
 				{
 					if (mb.GetType() != typeof(Transform) && mb.GetType() != typeof(EntityBehaviour))
-					{ Entity.AddComponent(mb); }
+					{ Entity.Add(mb); }
 				}
 			}
 		}
@@ -165,7 +165,7 @@ namespace AlphaECS.Unity
 			base.OnDestroy();
 		}
 
-		private void AddTransformToView(ViewComponent viewComponent)
+		private void AddTransformToView(View viewComponent)
 		{
 			//ensure that the root EntityBehaviour's transform is first
 			if (Proxy == null)

@@ -7,6 +7,7 @@ using UniRx;
 using AlphaECS;
 using AlphaECS.Unity;
 using UniRx.Triggers;
+using System;
 
 public class GameOverScreen : ComponentBehaviour
 {
@@ -16,13 +17,11 @@ public class GameOverScreen : ComponentBehaviour
 	{
 		base.Initialize (eventSystem);
 
-		EventSystem.OnEvent<DeathEvent> ().Where (_ => _.Target.HasComponent<InputComponent> ()).Subscribe (_ =>
+		EventSystem.OnEvent<Died> ().Where (_ => _.Target.Has<AxisInput> ()).Subscribe (_ =>
 		{
 			animator.SetTrigger("GameOver");
-			this.OnMouseDownAsObservable().Subscribe(x => 
-			{
-				Debug.Log("restarting level");
-			});
+            Observable.Timer(TimeSpan.FromSeconds(3)).Subscribe(__ => this.OnMouseDownAsObservable().Subscribe(x => Debug.Log("restarting level")));
+            
 		}).AddTo (this);
 	}
 }

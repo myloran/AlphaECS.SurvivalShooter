@@ -9,7 +9,7 @@ using AlphaECS;
 
 public class ScoreHUD : ComponentBehaviour
 {
-	[Inject] private ScoringSystem ScoringSystem { get; set; }
+	[Inject] private Scoring ScoringSystem { get; set; }
 
 	Text ScoreText;
 

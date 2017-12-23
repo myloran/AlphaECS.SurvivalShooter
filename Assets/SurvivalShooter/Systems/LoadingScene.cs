@@ -7,13 +7,13 @@ using UnityEngine.SceneManagement;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class SceneSystem : SystemBehaviour
+	public class LoadingScene : SystemBehaviour
 	{
 		public override void Initialize (IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
 		{
 			base.Initialize (eventSystem, poolManager, groupFactory);
 
-			EventSystem.OnEvent<LoadSceneEvent> ().Subscribe (e =>
+			EventSystem.OnEvent<LoadScene> ().Subscribe (e =>
 			{
 				LoadScene(e.SceneName);
 //				UnloadSceneAsync("Level_01").ToObservable()
@@ -24,7 +24,7 @@ namespace AlphaECS.SurvivalShooter
 //					});
 			}).AddTo (this);
 
-			EventSystem.OnEvent<UnloadSceneEvent> ().Subscribe (e =>
+			EventSystem.OnEvent<UnloadScene> ().Subscribe (e =>
 			{
 				StartCoroutine(UnloadSceneAsync(e.SceneName));
 			}).AddTo (this);

@@ -75,13 +75,13 @@ namespace AlphaECS
 
 				if (typeof(Component).IsAssignableFrom(type))
 				{					
-					if (!entity.HasComponent<ViewComponent> ())
+					if (!entity.Has<View> ())
 					{
-						entity.AddComponent (new ViewComponent ());
+						entity.Add (new View ());
 						Debug.LogWarning ("No view found for component " + type.ToString () + " !");
 					}
 
-					var viewComponent = entity.GetComponent<ViewComponent> ();
+					var viewComponent = entity.Get<View> ();
 					var index = i;
 					viewComponent.Transforms.ObserveAdd ().Select(x => x.Value).StartWith(viewComponent.Transforms).Subscribe (t =>
 					{
@@ -94,13 +94,13 @@ namespace AlphaECS
 				}
 				else
 				{
-					if (!entity.HasComponent (type))
+					if (!entity.Has (type))
 					{
 						component = (object)Activator.CreateInstance (type);
 					}
 					else
 					{
-						component = entity.GetComponent (type);
+						component = entity.Get (type);
 					}
 					JsonUtility.FromJsonOverwrite (node ["Components"] [i].ToString(), component);
 				}

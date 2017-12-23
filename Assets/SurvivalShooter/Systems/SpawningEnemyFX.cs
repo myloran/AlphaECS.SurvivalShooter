@@ -9,7 +9,7 @@ using UnityEngine.AI;
 
 namespace AlphaECS.SurvivalShooter
 {
-	public class EnemyFXSystem : SystemBehaviour
+	public class SpawningEnemyFX : SystemBehaviour
 	{
 		const float DeathSinkSpeed = 2.5f;
 
@@ -17,12 +17,12 @@ namespace AlphaECS.SurvivalShooter
 		{
 			base.Initialize (eventSystem, poolManager, groupFactory);
 
-			EventSystem.OnEvent<DamageEvent> ().Where(_ => _.Target.HasComponent<InputComponent>() == false).Subscribe (_ =>
+			EventSystem.OnEvent<Damaged> ().Where(_ => _.Target.Has<AxisInput>() == false).Subscribe (_ =>
 			{
-				if(_.Target.GetComponent<HealthComponent>().CurrentHealth.Value <= 0)
+				if(_.Target.Get<Health>().CurrentHealth.Value <= 0)
 				{ return; }
 
-				var viewComponent = _.Target.GetComponent<ViewComponent>();
+				var viewComponent = _.Target.Get<View>();
 				var soundFX = viewComponent.Transforms[0].GetComponentsInChildren<AudioSource>();
 				var hurtFX = soundFX.Where(_2 => _2.clip.name.Contains("Hurt")).FirstOrDefault();
 				hurtFX.Play();
@@ -32,15 +32,15 @@ namespace AlphaECS.SurvivalShooter
 				particles.Play();
 			}).AddTo (this);
 
-			var group = GroupFactory.Create (new Type[]{ typeof(ViewComponent), typeof(HealthComponent), typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(Animator), typeof(Rigidbody) });
+			var group = GroupFactory.Create (new Type[]{ typeof(View), typeof(Health), typeof(NavMeshAgent), typeof(CapsuleCollider), typeof(Animator), typeof(Rigidbody) });
 			group.OnAdd().Subscribe (entity =>
 			{
-				var viewComponent = entity.GetComponent<ViewComponent> ();
+				var viewComponent = entity.Get<View> ();
 				var targetTransform = viewComponent.Transforms[0];
-				var healthComponent = entity.GetComponent<HealthComponent> ();
-				var capsuleCollider = entity.GetComponent<CapsuleCollider>();
-				var animator = entity.GetComponent<Animator>();
-				var rb = entity.GetComponent<Rigidbody>();
+				var healthComponent = entity.Get<Health> ();
+				var capsuleCollider = entity.Get<CapsuleCollider>();
+				var animator = entity.Get<Animator>();
+				var rb = entity.Get<Rigidbody>();
 
 				healthComponent.CurrentHealth.DistinctUntilChanged ().Where (value => value <= 0).Subscribe (_ =>
 				{

@@ -1,6 +1,6 @@
 ﻿namespace AlphaECS.SurvivalShooter
 {
-	public class UnloadSceneEvent
+	public class LoadScene
 	{
 		public string SceneName { get; set; }
 	}
