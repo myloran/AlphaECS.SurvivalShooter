@@ -15,7 +15,6 @@ namespace AlphaECS.SurvivalShooter {
 
             var group = GroupFactory.Create(new Type[] { typeof(Health), typeof(View), typeof(NavMeshAgent) });
             group.OnAdd().Subscribe(enemy => {
-                var viewComponent = enemy.Get<View>();//-
                 var navMeshAgent = enemy.Get<NavMeshAgent>();//-
                 var health = enemy.Get<Health>();//-
 

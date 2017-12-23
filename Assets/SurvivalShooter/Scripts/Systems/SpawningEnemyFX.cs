@@ -32,18 +32,14 @@ namespace AlphaECS.SurvivalShooter {
             group.OnAdd().Subscribe(enemy => {
                 var view = enemy.Get<View>();//-
                 var transform = view.Transforms[0];//-
-                var health = enemy.Get<Health>();//-
-                var collider = enemy.Get<CapsuleCollider>();//-
-                var animator = enemy.Get<Animator>();//-
-                var rigidbody = enemy.Get<Rigidbody>();//-
 
-                health.Current.DistinctUntilChanged().Where(value => value <= 0).Subscribe(_ => {
-                    collider.isTrigger = true;
-                    animator.SetTrigger("Die");
+                enemy.Get<Health>().Current.DistinctUntilChanged().Where(value => value <= 0).Subscribe(_ => {
+                    enemy.Get<CapsuleCollider>().isTrigger = true;
+                    enemy.Get<Animator>().SetTrigger("Die");
                     transform.GetComponentsInChildren<AudioSource>().
                         Where(__ => __.clip.name.Contains("Death")).
                         FirstOrDefault().Play();
-                    rigidbody.isKinematic = true;
+                    enemy.Get<Rigidbody>().isKinematic = true;
 
                     Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(__ => {
                         var sink = Observable.EveryUpdate().Subscribe(___ => {

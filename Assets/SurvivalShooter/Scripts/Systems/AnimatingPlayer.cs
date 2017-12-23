@@ -11,13 +11,11 @@ namespace AlphaECS.SurvivalShooter {
             var group = GroupFactory.Create(new Type[] { typeof(AxisInput), typeof(View), typeof(Animator) });
             group.OnAdd().Subscribe(player => {
                 var input = player.Get<AxisInput>();//-
-                var horizontal = input.Horizontal.DistinctUntilChanged();//-
-                var vertical = input.Vertical.DistinctUntilChanged();//-
-                var animator = player.Get<Animator>();//-
 
-                Observable.CombineLatest(horizontal, vertical, (h, v) => h != 0f || v != 0f).//-
+                Observable.CombineLatest(input.Horizontal.DistinctUntilChanged(), input.Vertical.DistinctUntilChanged(), 
+                    (horizontal, vertical) => horizontal != 0f || vertical != 0f).//-
                     ToReadOnlyReactiveProperty().DistinctUntilChanged().
-                    Subscribe(value => animator.SetBool("IsWalking", value)).AddTo(input.Disposer);
+                    Subscribe(value => player.Get<Animator>().SetBool("IsWalking", value)).AddTo(input.Disposer);
             }).AddTo(Disposer);
         }
     }

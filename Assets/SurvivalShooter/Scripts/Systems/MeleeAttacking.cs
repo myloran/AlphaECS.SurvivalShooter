@@ -13,12 +13,10 @@ namespace AlphaECS.SurvivalShooter {
             var group = GroupFactory.Create(new Type[] { typeof(View), typeof(MeleeAttack) });
             group.OnAdd().Subscribe(attacker => {
                 var view = attacker.Get<View>();//-
-                var transform = view.Transforms[0];//-
                 var attack = attacker.Get<MeleeAttack>();//-
                 attack.TargetInRange = new BoolReactiveProperty();//-
-                var collider = transform.GetComponent<Collider>();//-
 
-                SetTargetOnCollision(attack, collider); //extract collision system
+                SetTargetOnCollision(attack, view.Transforms[0].GetComponent<Collider>()); //extract collision system
 
                 attack.TargetInRange.DistinctUntilChanged().Subscribe(targetInRange => {
                     if (targetInRange) {
