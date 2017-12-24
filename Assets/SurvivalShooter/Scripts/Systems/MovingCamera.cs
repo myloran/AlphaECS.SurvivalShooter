@@ -8,12 +8,10 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            var group = GroupFactory.Create(new Type[] { typeof(Camera), typeof(Follower) });
-            group.OnAdd().Subscribe(camera => {
-                var follower = camera.Get<Follower>();//-
+            GroupFactory.Create<Camera, Follower>().OnAdd((camera, _, follower) => {
                 follower.Offset = follower.transform.position - follower.Target.position;
 
-                Observable.EveryFixedUpdate().Subscribe(_ => {
+                Observable.EveryFixedUpdate().Subscribe(__ => {
                     if (follower.Target == null)
                         return;
 

@@ -10,10 +10,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            var group = GroupFactory.Create(new Type[] { typeof(View), typeof(MeleeAttack) });
-            group.OnAdd().Subscribe(attacker => {
-                var view = attacker.Get<View>();//-
-                var attack = attacker.Get<MeleeAttack>();//-
+            GroupFactory.Create<View, MeleeAttack>().OnAdd((attacker, view, attack) => {
                 attack.TargetInRange = new BoolReactiveProperty();//-
 
                 SetTargetOnCollision(attack, view.Transforms[0].GetComponent<Collider>()); //extract collision system
@@ -23,7 +20,7 @@ namespace AlphaECS.SurvivalShooter {
                         attack.Attack = Observable.Timer(TimeSpan.FromSeconds(0f),
                             TimeSpan.FromSeconds(1f / attack.AttacksPerSecond)).
                             Subscribe(_ => {//make shortcut method for TimeSpan.FromSeconds()
-                                var attackPosition = attack.Target.Get<View>().Transforms[0].position;//-
+                                var attackPosition = view.Transforms[0].position;//-
                                 EventSystem.Publish(new Damaged(attacker, attack.Target, attack.Damage, attackPosition));
                             }).AddTo(attack.Target.Get<View>().Disposer);
                     } else attack.Attack?.Dispose();
@@ -33,7 +30,7 @@ namespace AlphaECS.SurvivalShooter {
 
         void SetTargetOnCollision(MeleeAttack attack, Collider collider) {
             collider.OnTriggerEnterAsObservable().Subscribe(targetCollider => {
-                var targetView = targetCollider.GetComponent<EntityBehaviour>();//=
+                var targetView = targetCollider.GetComponent<EntityBehaviour>();//name it properly etc
                 if (targetView == null || !targetView.Entity.Has<AxisInput>() || !targetView.Entity.Has<Health>()) return;
 
                 attack.Target = targetView.Entity;

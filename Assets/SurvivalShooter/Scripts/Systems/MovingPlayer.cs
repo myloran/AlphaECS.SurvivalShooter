@@ -12,17 +12,14 @@ namespace AlphaECS.SurvivalShooter {
             base.Initialize(eventSystem, poolManager, groupFactory);
 
             FloorMask = LayerMask.GetMask("Floor");
-            var group = GroupFactory.Create(new Type[] { typeof(View), typeof(AxisInput), typeof(Rigidbody) });
             Observable.EveryFixedUpdate().Subscribe(_ => {
-                foreach (var player in group.Entities) {
-                    var input = player.Get<AxisInput>();//-
+                GroupFactory.Create<View, AxisInput, Rigidbody>().ForEach((player, view, input, rigidbody) => {
                     input.Horizontal.Value = Input.GetAxisRaw("Horizontal");//extract to input system
                     input.Vertical.Value = Input.GetAxisRaw("Vertical");//-
 
                     var movement = new Vector3(input.Horizontal.Value, 0f, input.Vertical.Value);
                     var speed = 6f;//to settings
                     movement = movement.normalized * speed * Time.deltaTime;
-                    var rigidbody = player.Get<Rigidbody>();//-
                     rigidbody.MovePosition(rigidbody.transform.position + movement);
 
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);//separate system for turning?
@@ -32,7 +29,7 @@ namespace AlphaECS.SurvivalShooter {
                         rotation.y = 0f;
                         rigidbody.MoveRotation(Quaternion.LookRotation(rotation));
                     }
-                }
+                });
             }).AddTo(this);
         }
     }

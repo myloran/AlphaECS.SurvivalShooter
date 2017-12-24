@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AlphaECS.Unity;
+using System;
 using System.Collections.Generic;
 using UniRx;
 
@@ -16,7 +17,11 @@ namespace AlphaECS
 		public static IObservable<IEntity> OnAdd(this IGroup group)
 		{ return group.Entities.ObserveAdd ().Select (x => x.Value).StartWith (group.Entities); }
 
-		public static IObservable<IEntity> OnRemove(this IGroup group)
+        //public static IObservable<T> OnAdd(this IGroup group, int number) {
+        //    return group.Entities.ObserveAdd().Select(x => x.Value).StartWith(group.Entities).Select(entity => entity.Get<T>());
+        //}
+
+        public static IObservable<IEntity> OnRemove(this IGroup group)
 		{ return group.Entities.ObserveRemove ().Select (x => x.Value); }
     }
 }

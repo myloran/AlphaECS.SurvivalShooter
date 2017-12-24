@@ -12,9 +12,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            var group = GroupFactory.Create(new Type[] { typeof(Spawner) });
-            group.OnAdd().Subscribe(enemySpawner => {
-                var spawner = enemySpawner.Get<Spawner>();
+            GroupFactory.Create<Spawner>().OnAdd((enemySpawner, spawner) => {
                 Observable.Timer(TimeSpan.FromSeconds(0f),
                     TimeSpan.FromSeconds(spawner.SpawnTime)).
                     Subscribe(_ => {

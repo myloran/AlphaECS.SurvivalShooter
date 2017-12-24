@@ -18,7 +18,8 @@ namespace AlphaECS
 		public ReactiveCollection<IEntity> cachedEntities = new ReactiveCollection<IEntity>();
 
 		ReactiveCollection<IEntity> _entities = new ReactiveCollection<IEntity>();
-		public ReactiveCollection<IEntity> Entities
+
+        public ReactiveCollection<IEntity> Entities
 		{
 			get { return _entities; }
 			set { _entities = value; }

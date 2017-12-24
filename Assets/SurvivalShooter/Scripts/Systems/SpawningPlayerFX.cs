@@ -22,9 +22,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            var group = GroupFactory.Create(new Type[] { typeof(View), typeof(Health), typeof(AxisInput), typeof(Animator) });
-            group.OnAdd().Subscribe(player => {
-                var health = player.Get<Health>();//-
+            GroupFactory.Create<View, Health, AxisInput, Animator>().OnAdd((player, view, health, _, __) => {
                 var previousHealth = health.Current.Value;
 
                 health.Current.DistinctUntilChanged().Subscribe(currentHealth => {
@@ -33,7 +31,7 @@ namespace AlphaECS.SurvivalShooter {
                             DamageImage.color = FlashColor;
                             DOTween.To(() => DamageImage.color, x => DamageImage.color = x, Color.clear, FlashSpeed);
                         }
-                        player.Get<View>().Transforms[0].GetComponentsInChildren<AudioSource>().
+                        view.Transforms[0].GetComponentsInChildren<AudioSource>().
                             Where(audioSource => audioSource.clip.name.Contains("Hurt")).
                             FirstOrDefault().Play();
                     }

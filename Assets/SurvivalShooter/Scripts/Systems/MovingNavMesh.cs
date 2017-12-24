@@ -13,18 +13,14 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            var group = GroupFactory.Create(new Type[] { typeof(Health), typeof(View), typeof(NavMeshAgent) });
-            group.OnAdd().Subscribe(enemy => {
-                var navMeshAgent = enemy.Get<NavMeshAgent>();//-
-                var health = enemy.Get<Health>();//-
-
+            GroupFactory.Create<Health, View, NavMeshAgent>().OnAdd((enemy, health, view, navMeshAgent) => {
                 Observable.EveryUpdate().Subscribe(_ => {
                     if (Target == null) {//-
                         var go = GameObject.FindGameObjectWithTag("Player"); //alternative?
                         if (go == null) return;//-
                         Target = go.transform;//-
                         if (Target == null) return;//-
-                        TargetHealth = Target.GetComponent<EntityBehaviour>().Entity.Get<Health>();//-
+                        TargetHealth = Target.GetComponent<EntityBehaviour>().Entity.Get<Health>();//not good
                         if (TargetHealth == null) return;//-
                     }
                     if (health.Current.Value > 0 && TargetHealth.Current.Value > 0) navMeshAgent.SetDestination(Target.position);
