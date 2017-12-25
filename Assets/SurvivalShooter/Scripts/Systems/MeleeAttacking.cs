@@ -10,7 +10,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            GroupFactory.Create<View, MeleeAttack>().OnAdd((attacker, view, attack) => {
+            GroupFactory.Create<View, MeleeAttack>().OnAdd((attacker, view, attack) => {//what about aggregated components?
                 attack.TargetInRange = new BoolReactiveProperty();//-
 
                 SetTargetOnCollision(attack, view.Transforms[0].GetComponent<Collider>()); //extract collision system
@@ -21,7 +21,8 @@ namespace AlphaECS.SurvivalShooter {
                             TimeSpan.FromSeconds(1f / attack.AttacksPerSecond)).
                             Subscribe(_ => {//make shortcut method for TimeSpan.FromSeconds()
                                 var attackPosition = view.Transforms[0].position;//-
-                                EventSystem.Publish(new Damaged(attacker, attack.Target, attack.Damage, attackPosition));
+                                attack.Target.Add(new TookDamage() { amount = attack.Damage, position = attackPosition });
+                                //EventSystem.Publish(new Damaged(attacker, attack.Target, attack.Damage, attackPosition));
                             }).AddTo(attack.Target.Get<View>().Disposer);
                     } else attack.Attack?.Dispose();
                 }).AddTo(view.Disposer);

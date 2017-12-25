@@ -11,9 +11,9 @@ public class GameOverScreen : ComponentBehaviour {
     public override void Initialize(IEventSystem eventSystem) {
         base.Initialize(eventSystem);//-
 
-        EventSystem.OnEvent<Died>().Where(died => died.Target.Has<AxisInput>()).Subscribe(_ => {
-            animator.SetTrigger("GameOver");
-            this.OnMouseDownAsObservable().Subscribe(x => Debug.Log("restarting level"));
-        }).AddTo(this);
+        //EventSystem.OnEvent<Died>().Where(died => died.Target.Has<AxisInput>()).Subscribe(_ => {
+        //    animator.SetTrigger("GameOver");
+        //    this.OnMouseDownAsObservable().Subscribe(x => Debug.Log("restarting level"));
+        //}).AddTo(this);
     }
 }

@@ -6,7 +6,7 @@ using UniRx;
 using AlphaECS;
 
 public class ScoreHUD : ComponentBehaviour {
-    [Inject] private Scoring ScoringSystem { get; set; }
+    [Inject] private Scoring ScoringSystem { get; set; } //there should be component, not system
     Text ScoreText;
 
     public override void Initialize(IEventSystem eventSystem) {

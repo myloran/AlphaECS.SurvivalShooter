@@ -12,20 +12,33 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            EventSystem.OnEvent<Damaged>().//sound system
-                Where(damaged => damaged.Target.Has<AxisInput>() == false).
-                Subscribe(damaged => {
-                    if (damaged.Target.Get<Health>().Current.Value <= 0) return;
+            GroupFactory.Create<Health, View, SpawnParticles>().OnAdd((entity, health, view, spawnParticles) => {
+                if (entity.Has<AxisInput>() || health.Current.Value <= 0) return;
 
-                    var view = damaged.Target.Get<View>();//-
-                    view.Transforms[0].GetComponentsInChildren<AudioSource>().
-                        Where(audio => audio.clip.name.Contains("Hurt")).
-                        FirstOrDefault().Play();
+                view.Transforms[0].GetComponentsInChildren<AudioSource>().
+                    Where(audio => audio.clip.name.Contains("Hurt")).
+                    FirstOrDefault().Play();
 
-                    var particles = view.Transforms[0].GetComponentInChildren<ParticleSystem>();//-
-                    particles.transform.position = damaged.Position;
-                    particles.Play();
-                }).AddTo(this);
+                var particles = view.Transforms[0].GetComponentInChildren<ParticleSystem>();
+                particles.transform.position = spawnParticles.position;
+                particles.Play();
+                entity.Remove<SpawnParticles>();
+            }).AddTo(this);
+
+            //EventSystem.OnEvent<Damaged>().//sound system
+            //    Where(damaged => damaged.Target.Has<AxisInput>() == false).
+            //    Subscribe(damaged => {
+            //        if (damaged.Target.Get<Health>().Current.Value <= 0) return;
+
+            //        var view = damaged.Target.Get<View>();//-
+            //        view.Transforms[0].GetComponentsInChildren<AudioSource>().
+            //            Where(audio => audio.clip.name.Contains("Hurt")).
+            //            FirstOrDefault().Play();
+
+            //        var particles = view.Transforms[0].GetComponentInChildren<ParticleSystem>();//-
+            //        particles.transform.position = damaged.Position;
+            //        particles.Play();
+            //    }).AddTo(this);
 
             GroupFactory.Create<View, Health, NavMeshAgent, CapsuleCollider, Animator, Rigidbody>().
                 OnAdd((enemy, view, _____, ______, collider, animator, rigidbody) => {

@@ -7,6 +7,9 @@ namespace AlphaECS
 {
 	public interface IEntity : IDisposable
     {
+        //add event here, so that every group interested in this event receive it and after that disposes itself automatically
+        //T Publish<T>() where T : class, new();
+        
         string Id { get; }
 		IEnumerable<object> Components { get; }
 

@@ -12,7 +12,7 @@ namespace AlphaECS.SurvivalShooter {
             GroupFactory.Create<Spawner>().OnAdd((_, spawner) => {
                 Observable.Timer(TimeSpan.FromSeconds(0f),
                     TimeSpan.FromSeconds(spawner.SpawnTime)).
-                    Subscribe(_ => {
+                    Subscribe(__ => {
                         var enemy = PrefabFactory.Instantiate(spawner.Prefab, spawner.transform);
                         enemy.transform.position = spawner.transform.position;
                         enemy.transform.rotation = spawner.transform.rotation;

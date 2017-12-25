@@ -22,6 +22,14 @@ namespace AlphaECS {
                 Subscribe(entity => action(entity, entity.Get<T1>(), entity.Get<T2>()));
         }
 
+        public IDisposable OnEvent(Action<IEntity, T1, T2> action) {
+            return Entities.ObserveAdd().Select(x => x.Value).StartWith(Entities).
+                Subscribe(entity => {
+                    action(entity, entity.Get<T1>(), entity.Get<T2>());
+                    entity.Remove<T2>();
+                });
+        }
+
         public void AddPredicate(Func<IEntity, T1, T2, ReactiveProperty<bool>> predicate) {
             Predicates.Add(entity => predicate(entity, entity.Get<T1>(), entity.Get<T2>()));
         }

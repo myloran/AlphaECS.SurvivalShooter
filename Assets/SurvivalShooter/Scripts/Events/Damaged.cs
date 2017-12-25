@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 namespace AlphaECS.SurvivalShooter {
-    public class Damaged {
+    public class Damaged /*: BaseEvent<IEntity, IEntity, int, Vector3>*/ {
         public IEntity Attacker { get; set; }//replace it with IEntity<View, MeleeAtack>
         public IEntity Target { get; set; }
         public int DamageAmount { get; private set; }

@@ -32,7 +32,8 @@ namespace AlphaECS.SurvivalShooter {
                                 if (Physics.Raycast(ray, out hit, shooter.Range, mask)) {
                                     var targetView = hit.collider.GetComponent<EntityBehaviour>();//-
                                     if (targetView?.Entity.Get<Health>() != null) {
-                                        EventSystem.Publish(new Damaged(player, targetView.Entity, shooter.Damage, hit.point));
+                                        targetView?.Entity.Add(new TookDamage() { amount = shooter.Damage, position = hit.point });
+                                        //EventSystem.Publish(new Damaged(player, targetView.Entity, shooter.Damage, hit.point));
                                     }
                                     line.SetPosition(1, hit.point);
                                 } else line.SetPosition(1, ray.origin + ray.direction * shooter.Range);
