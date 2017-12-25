@@ -11,15 +11,15 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            deads.OnAdd((dead, Health, view) => {
-                Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(_ => {
+            deads.OnAdd((dead, _, view, __) => {
+                Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(___ => {
                     PoolManager.GetPool().RemoveEntity(dead);//combine them as default
                     Destroy(view.Transforms[0].gameObject);
                 }).AddTo(view.Disposer);
             }).AddTo(Disposer);
 
             EventSystem.OnEvent<Damaged>().Subscribe(damaged => {
-                var health = damaged.Target.Get<Health>();//-
+                var health = damaged.Target.Get<Health>();//what if target does not have Health?
                 if (health.Current.Value <= 0) return;
 
                 health.Current.Value -= damaged.DamageAmount;

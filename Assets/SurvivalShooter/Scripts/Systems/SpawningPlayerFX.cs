@@ -19,7 +19,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            GroupFactory.Create<View, Health, AxisInput, Animator>().OnAdd((player, view, health, _, __) => {
+            GroupFactory.Create<View, Health, AxisInput, Animator>().OnAdd((___, view, health, _, __) => {
                 var previousHealth = health.Current.Value;
 
                 health.Current.DistinctUntilChanged().Subscribe(currentHealth => {
@@ -37,11 +37,11 @@ namespace AlphaECS.SurvivalShooter {
                 }).AddTo(Disposer).AddTo(health.Disposer);
             }).AddTo(Disposer);
             
-            deads.OnAdd((dead, health, view) => {
+            deads.OnAdd((dead, _, view, animator) => {
                 if (!dead.Has<AxisInput>()) return;
 
-                dead.Get<Animator>().SetTrigger("Die");
-                dead.Get<View>().Transforms[0].GetComponentsInChildren<AudioSource>().
+                animator.SetTrigger("Die");
+                view.Transforms[0].GetComponentsInChildren<AudioSource>().
                     Where(audioSource => audioSource.clip.name.Contains("Death")).
                     FirstOrDefault().Play();
             }).AddTo(Disposer);

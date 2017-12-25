@@ -54,7 +54,7 @@ namespace AlphaECS.SurvivalShooter {
             }).AddTo(Disposer);
 
             Observable.EveryUpdate().Subscribe(_ => {//input system
-                shooters.ForEach((player, view, shooter) => {
+                shooters.ForEach((__, ___, shooter) => {
                     if (Input.GetButton("Fire1")) shooter.IsShooting.Value = true;
                     else shooter.IsShooting.Value = false;
                 });

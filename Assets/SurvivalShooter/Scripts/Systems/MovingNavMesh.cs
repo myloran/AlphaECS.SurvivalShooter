@@ -13,7 +13,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            GroupFactory.Create<Health, View, NavMeshAgent>().OnAdd((enemy, health, view, navMeshAgent) => {
+            GroupFactory.Create<Health, View, NavMeshAgent>().OnAdd((__, health, ___, navMeshAgent) => {
                 Observable.EveryUpdate().Subscribe(_ => {
                     if (Target == null) {//-
                         var go = GameObject.FindGameObjectWithTag("Player"); //alternative?

@@ -2,7 +2,7 @@
 
 namespace AlphaECS.SurvivalShooter {
     public class Damaged {
-        public IEntity Attacker { get; set; }
+        public IEntity Attacker { get; set; }//replace it with IEntity<View, MeleeAtack>
         public IEntity Target { get; set; }
         public int DamageAmount { get; private set; }
         public Vector3 Position { get; private set; }

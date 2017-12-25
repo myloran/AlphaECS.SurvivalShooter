@@ -13,7 +13,7 @@ namespace AlphaECS.SurvivalShooter {
 
             FloorMask = LayerMask.GetMask("Floor");
             Observable.EveryFixedUpdate().Subscribe(_ => {
-                GroupFactory.Create<View, AxisInput, Rigidbody>().ForEach((player, view, input, rigidbody) => {
+                GroupFactory.Create<View, AxisInput, Rigidbody>().ForEach((__, ___, input, rigidbody) => {
                     input.Horizontal.Value = Input.GetAxisRaw("Horizontal");//extract to input system
                     input.Vertical.Value = Input.GetAxisRaw("Vertical");//-
 

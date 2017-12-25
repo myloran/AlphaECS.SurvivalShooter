@@ -12,7 +12,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            EventSystem.OnEvent<Damaged>().
+            EventSystem.OnEvent<Damaged>().//sound system
                 Where(damaged => damaged.Target.Has<AxisInput>() == false).
                 Subscribe(damaged => {
                     if (damaged.Target.Get<Health>().Current.Value <= 0) return;
@@ -28,7 +28,7 @@ namespace AlphaECS.SurvivalShooter {
                 }).AddTo(this);
 
             GroupFactory.Create<View, Health, NavMeshAgent, CapsuleCollider, Animator, Rigidbody>().
-                OnAdd((enemy, view, health, navMeshAgent, collider, animator, rigidbody) => {
+                OnAdd((enemy, view, _____, ______, collider, animator, rigidbody) => {
                 var transform = view.Transforms[0];//-
 
                 enemy.Get<Health>().Current.DistinctUntilChanged().Where(value => value <= 0).Subscribe(_ => {
