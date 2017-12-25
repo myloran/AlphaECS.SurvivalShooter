@@ -4,10 +4,7 @@ using UniRx;
 using Zenject;
 using UnityEngine.UI;
 using DG.Tweening;
-using System;
 using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
 
 namespace AlphaECS.SurvivalShooter {
     public class SpawningPlayerFX : SystemBehaviour {
@@ -39,8 +36,10 @@ namespace AlphaECS.SurvivalShooter {
                     previousHealth = currentHealth;
                 }).AddTo(Disposer).AddTo(health.Disposer);
             }).AddTo(Disposer);
+            
+            deads.OnAdd((dead, health, view) => {
+                if (!dead.Has<AxisInput>()) return;
 
-            deads.OnAdd().Where(dead => dead.Has<AxisInput>()).Subscribe(dead => {
                 dead.Get<Animator>().SetTrigger("Die");
                 dead.Get<View>().Transforms[0].GetComponentsInChildren<AudioSource>().
                     Where(audioSource => audioSource.clip.name.Contains("Death")).

@@ -11,8 +11,7 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            deads.OnAdd().Subscribe(dead => {
-                var view = dead.Get<View>();//-
+            deads.OnAdd((dead, Health, view) => {
                 Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(_ => {
                     PoolManager.GetPool().RemoveEntity(dead);//combine them as default
                     Destroy(view.Transforms[0].gameObject);

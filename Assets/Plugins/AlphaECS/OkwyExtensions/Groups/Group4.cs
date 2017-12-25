@@ -19,13 +19,14 @@ namespace AlphaECS {
         ReactiveCollection<IEntity> _entities = new ReactiveCollection<IEntity>();
 
         public IDisposable OnAdd(Action<IEntity, T1, T2, T3, T4> action) {
-            return Entities.ObserveAdd().Select(x => x.Value).StartWith(Entities).Subscribe(entity => {
-                action(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>(), entity.Get<T4>());
-            });
+            return Entities.ObserveAdd().Select(x => x.Value).StartWith(Entities).
+                Subscribe(entity => action(entity, entity.Get<T1>(), entity.Get<T2>(), 
+                    entity.Get<T3>(), entity.Get<T4>()));
         }
 
         public void AddPredicate(Func<IEntity, T1, T2, T3, T4, ReactiveProperty<bool>> predicate) {
-            Predicates.Add(entity => predicate(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>(), entity.Get<T4>()));
+            Predicates.Add(entity => predicate(entity, entity.Get<T1>(), entity.Get<T2>(), 
+                entity.Get<T3>(), entity.Get<T4>()));
         }
 
         public void ForEach(Action<IEntity, T1, T2, T3, T4> action) {
