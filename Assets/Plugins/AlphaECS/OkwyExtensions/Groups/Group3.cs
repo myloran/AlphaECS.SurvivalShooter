@@ -24,6 +24,10 @@ namespace AlphaECS {
             });
         }
 
+        public void AddPredicate(Func<IEntity, T1, T2, T3, ReactiveProperty<bool>> predicate) {
+            Predicates.Add(entity => predicate(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>()));
+        }
+
         public void ForEach(Action<IEntity, T1, T2, T3> action) {
             foreach (var entity in Entities) {
                 action(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>());
@@ -51,9 +55,7 @@ namespace AlphaECS {
 
         public Group() { }
 
-        public Group(Type[] components, List<Func<IEntity, ReactiveProperty<bool>>> predicates) {
-            Components = components;
-
+        public Group(List<Func<IEntity, ReactiveProperty<bool>>> predicates) {
             foreach (var predicate in predicates) {
                 Predicates.Add(predicate);
             }
@@ -61,6 +63,7 @@ namespace AlphaECS {
 
         [Inject]
         public virtual void Initialize(IEventSystem eventSystem, IPoolManager poolManager) {
+            Components = new Type[] { typeof(T1), typeof(T2), typeof(T3)};
             EventSystem = eventSystem;
             EntityPool = poolManager.GetPool();
 

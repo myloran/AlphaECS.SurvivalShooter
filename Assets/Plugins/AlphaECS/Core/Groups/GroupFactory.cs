@@ -23,24 +23,21 @@ namespace AlphaECS
 		}
 
         public Group<T1> Create<T1>() where T1 : class {
-            types = new Type[] { typeof(T1) };
-            var set = new Group<T1>(types, predicates);
+            var set = new Group<T1>(predicates);
             Container.Inject(set);
             CleanUp();
             return set;
         }
 
         public Group<T1, T2> Create<T1, T2>() where T1 : class where T2 : class {
-            types = new Type[] { typeof(T1), typeof(T2) };
-            var set = new Group<T1, T2>(types, predicates);
+            var set = new Group<T1, T2>(predicates);
             Container.Inject(set);
             CleanUp();
             return set;
         }
 
         public Group<T1, T2, T3> Create<T1, T2, T3>() where T1 : class where T2 : class where T3 : class {
-            types = new Type[] { typeof(T1), typeof(T2), typeof(T3) };
-            var set = new Group<T1, T2, T3>(types, predicates);
+            var set = new Group<T1, T2, T3>(predicates);
             Container.Inject(set);
             CleanUp();
             return set;
@@ -48,8 +45,7 @@ namespace AlphaECS
 
         public Group<T1, T2, T3, T4> Create<T1, T2, T3, T4>() where T1 : class where T2 : class
             where T3 : class where T4 : class {
-            types = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4) };
-            var set = new Group<T1, T2, T3, T4>(types, predicates);
+            var set = new Group<T1, T2, T3, T4>(predicates);
             Container.Inject(set);
             CleanUp();
             return set;
@@ -57,8 +53,7 @@ namespace AlphaECS
 
         public Group<T1, T2, T3, T4, T5> Create<T1, T2, T3, T4, T5>()
             where T1 : class where T2 : class where T3 : class where T4 : class where T5 : class {
-            types = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
-            var set = new Group<T1, T2, T3, T4, T5>(types, predicates);
+            var set = new Group<T1, T2, T3, T4, T5>(predicates);
             Container.Inject(set);
             types = null;
             predicates.Clear();
@@ -68,8 +63,7 @@ namespace AlphaECS
         public Group<T1, T2, T3, T4, T5, T6> Create<T1, T2, T3, T4, T5, T6>()
             where T1 : class where T2 : class where T3 : class where T4 : class
             where T5 : class where T6 : class {
-            types = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6)};
-            var set = new Group<T1, T2, T3, T4, T5, T6>(types, predicates);
+            var set = new Group<T1, T2, T3, T4, T5, T6>(predicates);
             Container.Inject(set);
             CleanUp();
             return set;
@@ -78,8 +72,7 @@ namespace AlphaECS
         public Group<T1, T2, T3, T4, T5, T6, T7> Create<T1, T2, T3, T4, T5, T6, T7>() 
             where T1 : class where T2 : class where T3 : class where T4 : class 
             where T5 : class where T6 : class where T7 : class {
-            types = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5), typeof(T6), typeof(T7) };
-            var set = new Group<T1, T2, T3, T4, T5, T6, T7>(types, predicates);
+            var set = new Group<T1, T2, T3, T4, T5, T6, T7>(predicates);
             Container.Inject(set);
             CleanUp();
             return set;

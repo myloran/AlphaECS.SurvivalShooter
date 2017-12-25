@@ -20,9 +20,14 @@ namespace AlphaECS {
 
         public IDisposable OnAdd(Action<IEntity, T1, T2, T3, T4, T5> action) {
             return Entities.ObserveAdd().Select(x => x.Value).StartWith(Entities).Subscribe(entity => {
-                action(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>()
-                    , entity.Get<T4>(), entity.Get<T5>());
+                action(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>(), 
+                    entity.Get<T4>(), entity.Get<T5>());
             });
+        }
+
+        public void AddPredicate(Func<IEntity, T1, T2, T3, T4, T5, ReactiveProperty<bool>> predicate) {
+            Predicates.Add(entity => predicate(entity, entity.Get<T1>(), entity.Get<T2>(), entity.Get<T3>(), 
+                entity.Get<T4>(), entity.Get<T5>()));
         }
 
         public void ForEach(Action<IEntity, T1, T2, T3, T4, T5> action) {
@@ -53,9 +58,7 @@ namespace AlphaECS {
 
         public Group() { }
 
-        public Group(Type[] components, List<Func<IEntity, ReactiveProperty<bool>>> predicates) {
-            Components = components;
-
+        public Group(List<Func<IEntity, ReactiveProperty<bool>>> predicates) {
             foreach (var predicate in predicates) {
                 Predicates.Add(predicate);
             }
@@ -63,6 +66,7 @@ namespace AlphaECS {
 
         [Inject]
         public virtual void Initialize(IEventSystem eventSystem, IPoolManager poolManager) {
+            Components = new Type[] { typeof(T1), typeof(T2), typeof(T3), typeof(T4), typeof(T5) };
             EventSystem = eventSystem;
             EntityPool = poolManager.GetPool();
 

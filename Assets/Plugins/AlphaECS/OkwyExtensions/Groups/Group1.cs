@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Linq;
 
 namespace AlphaECS {
-    public class Group<T1> : IGroup, IDisposableContainer, IDisposable where T1 : class {
+    public class Group<T1> : IGroup, IDisposableContainer, IDisposable where T1 : class { //add entities cashed components
         public IEventSystem EventSystem { get; set; }
         public IPool EntityPool { get; set; }
 
@@ -21,6 +21,10 @@ namespace AlphaECS {
             return Entities.ObserveAdd().Select(x => x.Value).StartWith(Entities).Subscribe(entity => {
                 action(entity, entity.Get<T1>());
             });
+        }
+
+        public void AddPredicate(Func<IEntity, T1, ReactiveProperty<bool>> predicate) {
+            Predicates.Add(entity => predicate(entity, entity.Get<T1>()));
         }
 
         public void ForEach(Action<IEntity, T1> action) {
@@ -50,9 +54,7 @@ namespace AlphaECS {
 
         public Group() { }
 
-        public Group(Type[] components, List<Func<IEntity, ReactiveProperty<bool>>> predicates) {
-            Components = components;
-
+        public Group(List<Func<IEntity, ReactiveProperty<bool>>> predicates) {
             foreach (var predicate in predicates) {
                 Predicates.Add(predicate);
             }
@@ -60,6 +62,7 @@ namespace AlphaECS {
 
         [Inject]
         public virtual void Initialize(IEventSystem eventSystem, IPoolManager poolManager) {
+            Components = new Type[] { typeof(T1) };
             EventSystem = eventSystem;
             EntityPool = poolManager.GetPool();
 
