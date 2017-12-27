@@ -86,7 +86,7 @@ namespace AlphaECS
 		public T Get<T>() where T : class
         {
 			var type = typeof(T);
-			if (_components.ContainsKey (type))
+			if (_components.ContainsKey (type))// is it needed to check it?
 			{
 				return _components [typeof(T)] as T;
 			} else
