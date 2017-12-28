@@ -26,12 +26,10 @@ namespace AlphaECS.SurvivalShooter {
                     if (currentHealth < previousHealth && currentHealth >= 0) {
                         if (DamageImage != null) {
                             DamageImage.color = FlashColor;
-                            DOTween.To(() => DamageImage.color, x => DamageImage.color = x, Color.clear, FlashSpeed);
-                        }
+                            DOTween.To(() => DamageImage.color, x => DamageImage.color = x, Color.clear, FlashSpeed);}
                         view.Transforms[0].GetComponentsInChildren<AudioSource>().
                             Where(audioSource => audioSource.clip.name.Contains("Hurt")).
-                            FirstOrDefault().Play();
-                    }
+                            FirstOrDefault().Play();}
                     HealthSlider.value = currentHealth;
                     previousHealth = currentHealth;
                 }).AddTo(Disposer).AddTo(health.Disposer);

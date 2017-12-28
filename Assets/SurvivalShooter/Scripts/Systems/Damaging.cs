@@ -18,22 +18,12 @@ namespace AlphaECS.SurvivalShooter {
                 }).AddTo(view.Disposer);
             }).AddTo(Disposer);
 
-            GroupFactory.Create<Health, TookDamage>().OnAdd((entity, health, tookDamage) => {
+            EventSystem.On<Health, View, Damaged>((health, view, damaged) => {
                 if (health.Current.Value <= 0) return;
 
-                health.Current.Value -= tookDamage.amount;
-                if (health.Current.Value <= 0) entity.Add(new InstantlyDied());
-                entity.Remove<TookDamage>();
-                entity.Add(new SpawnParticles() { position = tookDamage.position });
+                health.Current.Value -= damaged.amount;
+                if (health.Current.Value <= 0) EventSystem.Publish(new Died(damaged.entity));
             }).AddTo(this);
-
-            //EventSystem.OnEvent<Damaged>().Subscribe(damaged => {
-            //    var health = damaged.Target.Get<Health>();//what if target does not have Health?
-            //    if (health.Current.Value <= 0) return;
-
-            //    health.Current.Value -= damaged.DamageAmount;
-            //    if (health.Current.Value <= 0) EventSystem.Publish(new Died(damaged.Attacker, damaged.Target));
-            //}).AddTo(this);
         }
     }
 }

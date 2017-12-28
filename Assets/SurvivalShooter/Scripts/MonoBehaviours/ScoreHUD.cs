@@ -13,8 +13,7 @@ public class ScoreHUD : ComponentBehaviour {
         base.Initialize(eventSystem);//-
 
         ScoreText = GetComponent<Text>();
-        ScoringSystem.Score.DistinctUntilChanged().Subscribe(value => {
-            ScoreText.text = "Score: " + value.ToString();
-        }).AddTo(this);
+        ScoringSystem.Score.DistinctUntilChanged().Subscribe(value => 
+            ScoreText.text = "Score: " + value.ToString()).AddTo(this);
     }
 }

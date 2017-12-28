@@ -8,8 +8,10 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            EventSystem.OnEvent<LoadScene>().Subscribe(scene => LoadScene(scene.Name)).AddTo(this);
-            EventSystem.OnEvent<UnloadScene>().Subscribe(scene => StartCoroutine(UnloadSceneAsync(scene.Name))).AddTo(this);
+            EventSystem.OnEvent<LoadScene>().Subscribe(scene => 
+                LoadScene(scene.Name)).AddTo(this);
+            EventSystem.OnEvent<UnloadScene>().Subscribe(scene => 
+                StartCoroutine(UnloadSceneAsync(scene.Name))).AddTo(this);
         }
 
         void LoadScene(string name) { SceneManager.LoadScene(name); }

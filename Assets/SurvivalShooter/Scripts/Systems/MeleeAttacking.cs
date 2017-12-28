@@ -16,14 +16,12 @@ namespace AlphaECS.SurvivalShooter {
                 SetTargetOnCollision(attack, view.Transforms[0].GetComponent<Collider>()); //extract collision system
 
                 attack.TargetInRange.DistinctUntilChanged().Subscribe(targetInRange => {
-                    if (targetInRange) {
-                        attack.Attack = Observable.Timer(TimeSpan.FromSeconds(0f),
+                    if (targetInRange) {//make shortcut method for TimeSpan.FromSeconds()
+                        attack.Attack = Observable.Timer(TimeSpan.FromSeconds(0f), 
                             TimeSpan.FromSeconds(1f / attack.AttacksPerSecond)).
-                            Subscribe(_ => {//make shortcut method for TimeSpan.FromSeconds()
-                                var attackPosition = view.Transforms[0].position;//-
-                                attack.Target.Add(new TookDamage() { amount = attack.Damage, position = attackPosition });
-                                //EventSystem.Publish(new Damaged(attacker, attack.Target, attack.Damage, attackPosition));
-                            }).AddTo(attack.Target.Get<View>().Disposer);
+                                Subscribe(_ => EventSystem.Publish(new Damaged(attack.Target, 
+                                    attack.Damage, view.Transforms[0].position))).
+                                AddTo(attack.Target.Get<View>().Disposer);
                     } else attack.Attack?.Dispose();
                 }).AddTo(view.Disposer);
             }).AddTo(this);

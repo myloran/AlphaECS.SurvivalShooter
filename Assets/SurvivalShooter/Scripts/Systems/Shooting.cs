@@ -32,9 +32,7 @@ namespace AlphaECS.SurvivalShooter {
                                 if (Physics.Raycast(ray, out hit, shooter.Range, mask)) {
                                     var targetView = hit.collider.GetComponent<EntityBehaviour>();//-
                                     if (targetView?.Entity.Get<Health>() != null) {
-                                        targetView?.Entity.Add(new TookDamage() { amount = shooter.Damage, position = hit.point });
-                                        //EventSystem.Publish(new Damaged(player, targetView.Entity, shooter.Damage, hit.point));
-                                    }
+                                        EventSystem.Publish(new Damaged(targetView.Entity, shooter.Damage, hit.point));}
                                     line.SetPosition(1, hit.point);
                                 } else line.SetPosition(1, ray.origin + ray.direction * shooter.Range);
 
@@ -45,10 +43,11 @@ namespace AlphaECS.SurvivalShooter {
                                 line.enabled = true;
                                 line.SetPosition(0, gun.position);
 
-                                Observable.Timer(TimeSpan.FromSeconds((1f / shooter.ShotsPerSecond) / 2f)).Subscribe(__ => {
-                                    line.enabled = false;
-                                    light.enabled = false;
-                                }).AddTo(Disposer).AddTo(view.Disposer);
+                                Observable.Timer(TimeSpan.FromSeconds((1f / shooter.ShotsPerSecond) / 2f)).
+                                    Subscribe(__ => {
+                                        line.enabled = false;
+                                        light.enabled = false;
+                                    }).AddTo(Disposer).AddTo(view.Disposer);
                         }).AddTo(Disposer).AddTo(shooter.Disposer);
                     } else shooter.Shoot?.Dispose();
                 }).AddTo(Disposer).AddTo(shooter.Disposer);

@@ -12,8 +12,7 @@ namespace AlphaECS.SurvivalShooter {
                 follower.Offset = follower.transform.position - follower.Target.position;
 
                 Observable.EveryFixedUpdate().Subscribe(___ => {
-                    if (follower.Target == null)
-                        return;
+                    if (follower.Target == null) return;
 
                     Vector3 targetCamPos = follower.Target.position + follower.Offset;
                     follower.transform.position = Vector3.Lerp(follower.transform.position, 

@@ -1,11 +1,11 @@
-﻿namespace AlphaECS.SurvivalShooter {
-    public class Died {
-        public IEntity Attacker { get; set; }
-        public IEntity Target { get; set; }
+﻿using UnityEngine;
 
-        public Died(IEntity attacker, IEntity target) {//-
-            Attacker = attacker;//-
-            Target = target;//-
-        }//-
+namespace AlphaECS.SurvivalShooter {
+    public class Died : IEvent{
+        public IEntity entity { get; set; }
+
+        public Died(IEntity entity) {
+            this.entity = entity;
+        }
     }
 }

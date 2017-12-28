@@ -28,9 +28,7 @@ namespace AlphaECS.SurvivalShooter {
                     if (Physics.Raycast(ray, out hit, 1000f, FloorMask)) {
                         Vector3 rotation = hit.point - rigidbody.transform.position;
                         rotation.y = 0f;
-                        rigidbody.MoveRotation(Quaternion.LookRotation(rotation));
-                    }
-                });
+                        rigidbody.MoveRotation(Quaternion.LookRotation(rotation));}});
             }).AddTo(this);
         }
     }

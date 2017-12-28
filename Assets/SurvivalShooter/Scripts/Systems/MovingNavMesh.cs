@@ -21,9 +21,9 @@ namespace AlphaECS.SurvivalShooter {
                         Target = go.transform;//-
                         if (Target == null) return;//-
                         TargetHealth = Target.GetComponent<EntityBehaviour>().Entity.Get<Health>();//not good
-                        if (TargetHealth == null) return;//-
-                    }
-                    if (health.Current.Value > 0 && TargetHealth.Current.Value > 0) navMeshAgent.SetDestination(Target.position);
+                        if (TargetHealth == null) return;}
+                    if (health.Current.Value > 0 && TargetHealth.Current.Value > 0)
+                        navMeshAgent.SetDestination(Target.position);
                     else navMeshAgent.enabled = false;
                 }).AddTo(navMeshAgent).AddTo(health);
             }).AddTo(this);

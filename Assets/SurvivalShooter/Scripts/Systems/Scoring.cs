@@ -9,16 +9,9 @@ namespace AlphaECS.SurvivalShooter {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
             Score = new IntReactiveProperty();//-
 
-            GroupFactory.Create<InstantlyDied>().OnAdd((dead, _) => {
-                if (dead.Has<AxisInput>()) return;
-
-                Score.Value++;
-                dead.Remove<InstantlyDied>();
+            EventSystem.On<AxisInput, Died>((input, died) => {
+                if (input == null) Score.Value++;
             }).AddTo(this);
-
-            //EventSystem.OnEvent<Died>().
-            //    Where(died => !died.Target.Has<AxisInput>()).
-            //    Subscribe(_ => Score.Value++).AddTo(this);
         }
     }
 }

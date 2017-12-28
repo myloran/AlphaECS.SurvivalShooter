@@ -12,33 +12,16 @@ namespace AlphaECS.SurvivalShooter {
         public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
             base.Initialize(eventSystem, poolManager, groupFactory);//-
 
-            GroupFactory.Create<Health, View, SpawnParticles>().OnAdd((entity, health, view, spawnParticles) => {
-                if (entity.Has<AxisInput>() || health.Current.Value <= 0) return;
+            EventSystem.On<AxisInput, Health, View, Damaged>((input, health, view, damaged) => {
+                if (input != null || health.Current.Value <= 0) return;
 
                 view.Transforms[0].GetComponentsInChildren<AudioSource>().
                     Where(audio => audio.clip.name.Contains("Hurt")).
                     FirstOrDefault().Play();
-
                 var particles = view.Transforms[0].GetComponentInChildren<ParticleSystem>();
-                particles.transform.position = spawnParticles.position;
+                particles.transform.position = damaged.position;
                 particles.Play();
-                entity.Remove<SpawnParticles>();
             }).AddTo(this);
-
-            //EventSystem.OnEvent<Damaged>().//sound system
-            //    Where(damaged => damaged.Target.Has<AxisInput>() == false).
-            //    Subscribe(damaged => {
-            //        if (damaged.Target.Get<Health>().Current.Value <= 0) return;
-
-            //        var view = damaged.Target.Get<View>();//-
-            //        view.Transforms[0].GetComponentsInChildren<AudioSource>().
-            //            Where(audio => audio.clip.name.Contains("Hurt")).
-            //            FirstOrDefault().Play();
-
-            //        var particles = view.Transforms[0].GetComponentInChildren<ParticleSystem>();//-
-            //        particles.transform.position = damaged.Position;
-            //        particles.Play();
-            //    }).AddTo(this);
 
             GroupFactory.Create<View, Health, NavMeshAgent, CapsuleCollider, Animator, Rigidbody>().
                 OnAdd((enemy, view, _____, ______, collider, animator, rigidbody) => {
@@ -53,13 +36,10 @@ namespace AlphaECS.SurvivalShooter {
                     rigidbody.isKinematic = true;
 
                     Observable.Timer(TimeSpan.FromSeconds(1)).Subscribe(__ => {
-                        var sink = Observable.EveryUpdate().Subscribe(___ => {
-                            transform.Translate(-Vector3.up * DeathSinkSpeed * Time.deltaTime);
-                        }).AddTo(view.Disposer);
-
-                        Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(____ => {
-                            sink.Dispose();
-                        });
+                        var sink = Observable.EveryUpdate().Subscribe(___ => 
+                            transform.Translate(-Vector3.up * DeathSinkSpeed * Time.deltaTime)).
+                            AddTo(view.Disposer);
+                        Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(____ => sink.Dispose());
                     });
                 }).AddTo(view.Disposer);
             }).AddTo(this);
