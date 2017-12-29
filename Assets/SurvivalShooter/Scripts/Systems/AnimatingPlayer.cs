@@ -5,9 +5,7 @@ using System;
 
 namespace AlphaECS.SurvivalShooter {
     public class AnimatingPlayer : SystemBehaviour {
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             GroupFactory.Create<AxisInput, View, Animator>().OnAdd((_, input, __, animator) => {
                 Observable.CombineLatest(input.Horizontal.DistinctUntilChanged(), input.Vertical.DistinctUntilChanged(), 
                     (horizontal, vertical) => horizontal != 0f || vertical != 0f).

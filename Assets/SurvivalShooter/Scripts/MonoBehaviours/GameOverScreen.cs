@@ -8,9 +8,7 @@ using UniRx.Triggers;
 public class GameOverScreen : ComponentBehaviour {
     public Animator animator;
 
-    public override void Initialize(IEventSystem eventSystem) {
-        base.Initialize(eventSystem);//-
-
+    public override void Initialize() {
         EventSystem.On<AxisInput, Died>((input, died) => {
             if (input != null) {
                 animator.SetTrigger("GameOver");

@@ -5,8 +5,7 @@ namespace AlphaECS.SurvivalShooter {
     public class Scoring : SystemBehaviour {
         public IntReactiveProperty Score { get; private set; } //component?
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
+        public override void Initialize() {
             Score = new IntReactiveProperty();//-
 
             EventSystem.On<AxisInput, Died>((input, died) => {

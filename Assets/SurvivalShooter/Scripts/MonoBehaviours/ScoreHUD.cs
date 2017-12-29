@@ -9,9 +9,7 @@ public class ScoreHUD : ComponentBehaviour {
     [Inject] private Scoring ScoringSystem { get; set; } //there should be component, not system
     Text ScoreText;
 
-    public override void Initialize(IEventSystem eventSystem) {
-        base.Initialize(eventSystem);//-
-
+    public override void Initialize() {
         ScoreText = GetComponent<Text>();
         ScoringSystem.Score.DistinctUntilChanged().Subscribe(value => 
             ScoreText.text = "Score: " + value.ToString()).AddTo(this);

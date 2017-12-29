@@ -4920,7 +4920,7 @@ Prefab:
     - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
         type: 2}
       propertyPath: ComponentData.Array.data[0]
-      value: '{"Current":{"value":0},"Starting":10000,"IsDamaged":false}'
+      value: '{"Current":{"value":0},"Starting":100,"IsDamaged":false}'
       objectReference: {fileID: 0}
     - target: {fileID: 114815174939823910, guid: 0c59860f57f864993a346bfafe7df61f,
         type: 2}

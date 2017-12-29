@@ -16,9 +16,7 @@ namespace AlphaECS.SurvivalShooter {
         [Inject]
         public Deads deads { get; set; }
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             GroupFactory.Create<View, Health, AxisInput, Animator>().OnAdd((___, view, health, _, __) => {
                 var previousHealth = health.Current.Value;
 

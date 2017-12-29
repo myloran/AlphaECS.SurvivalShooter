@@ -8,6 +8,7 @@ namespace AlphaECS.Unity
 {
     public abstract class ComponentBehaviour : MonoBehaviour, IDisposable
     {
+        [Inject]
         protected IEventSystem EventSystem { get; set; }
 
         private CompositeDisposable _disposer = new CompositeDisposable();
@@ -32,9 +33,8 @@ namespace AlphaECS.Unity
         }
 
         [Inject]
-		public virtual void Initialize(IEventSystem eventSystem)
+		public virtual void Initialize()
         {
-			EventSystem = eventSystem;
             EventSystem.Publish(new ComponentCreated() { Component = this });
         }
 

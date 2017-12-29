@@ -8,9 +8,7 @@ namespace AlphaECS.SurvivalShooter {
         public readonly float MovementSpeed = 2.0f; //to scriptable settings
         private int FloorMask;//-
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);
-
+        public override void Initialize() {
             FloorMask = LayerMask.GetMask("Floor");
             Group<View, AxisInput, Rigidbody> group = GroupFactory.Create<View, AxisInput, Rigidbody>();
             Observable.EveryFixedUpdate().Subscribe(_ => {

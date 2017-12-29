@@ -8,9 +8,7 @@ namespace AlphaECS.SurvivalShooter {
         [Inject]
         public Deads deads { get; set; }
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             deads.OnAdd((dead, _, view, __) => {
                 Observable.Timer(TimeSpan.FromSeconds(2)).Subscribe(___ => {
                     PoolManager.GetPool().RemoveEntity(dead);//combine them as default
@@ -18,7 +16,7 @@ namespace AlphaECS.SurvivalShooter {
                 }).AddTo(view.Disposer);
             }).AddTo(Disposer);
 
-            EventSystem.On<Health, View, Damaged>((health, view, damaged) => {
+            EventSystem.On<Health, Damaged>((health, damaged) => {
                 if (health.Current.Value <= 0) return;
 
                 health.Current.Value -= damaged.amount;

@@ -5,9 +5,7 @@ using System;
 
 namespace AlphaECS.SurvivalShooter {
     public class LoadingLevel : SystemBehaviour {
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             EventSystem.On<AxisInput, Died>((input, died) => {
                 if (input == null) return;
 

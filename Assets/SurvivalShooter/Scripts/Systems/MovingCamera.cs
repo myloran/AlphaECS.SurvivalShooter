@@ -5,9 +5,7 @@ using UniRx;
 
 namespace AlphaECS.SurvivalShooter {
     public class MovingCamera : SystemBehaviour {
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             GroupFactory.Create<Camera, Follower>().OnAdd((_, __, follower) => {
                 follower.Offset = follower.transform.position - follower.Target.position;
 

@@ -10,9 +10,7 @@ namespace AlphaECS.SurvivalShooter {
         Transform Target; //why it's here?
         Health TargetHealth;//-
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             GroupFactory.Create<Health, View, NavMeshAgent>().OnAdd((__, health, ___, navMeshAgent) => {
                 Observable.EveryUpdate().Subscribe(_ => {
                     if (Target == null) {//-

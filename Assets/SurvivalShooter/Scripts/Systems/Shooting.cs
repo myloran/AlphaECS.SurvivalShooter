@@ -9,9 +9,7 @@ namespace AlphaECS.SurvivalShooter {
         RaycastHit hit;//-
         int mask;//-
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             mask = LayerMask.GetMask("Shootable");
             Group<View, Shooter> shooters = GroupFactory.Create<View, Shooter>();
             shooters.OnAdd((player, view, shooter) => {

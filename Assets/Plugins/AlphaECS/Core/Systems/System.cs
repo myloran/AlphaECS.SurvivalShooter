@@ -19,12 +19,7 @@ namespace AlphaECS
 			private set { _disposer = value; }
 		}
 						
-		public virtual void Initialize (IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
-		{
-            EventSystem = eventSystem;
-            PoolManager = poolManager;
-            GroupFactory = groupFactory;
-		}
+		public virtual void Initialize () {}
 
 		public virtual void Dispose ()
 		{

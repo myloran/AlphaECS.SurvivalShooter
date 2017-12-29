@@ -106,7 +106,7 @@ namespace AlphaECS
 		{
 			var components = gameObject.GetComponentsInChildren<ComponentBehaviour> (true);
 			foreach (var component in components)
-			{ component.Initialize (EventSystem); }
+			{ component.Initialize (); }
 		}
 
         public Transform DefaultParent

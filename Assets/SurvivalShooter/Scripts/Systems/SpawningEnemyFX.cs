@@ -9,9 +9,7 @@ namespace AlphaECS.SurvivalShooter {
     public class SpawningEnemyFX : SystemBehaviour {
         const float DeathSinkSpeed = 2.5f; //to settings
 
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             EventSystem.On<AxisInput, Health, View, Damaged>((input, health, view, damaged) => {
                 if (input != null || health.Current.Value <= 0) return;
 

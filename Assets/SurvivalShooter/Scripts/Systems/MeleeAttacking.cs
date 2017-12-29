@@ -7,9 +7,7 @@ using System;
 
 namespace AlphaECS.SurvivalShooter {    
     public class MeleeAttacking : SystemBehaviour {
-        public override void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory) {
-            base.Initialize(eventSystem, poolManager, groupFactory);//-
-
+        public override void Initialize() {
             GroupFactory.Create<View, MeleeAttack>().OnAdd((attacker, view, attack) => {//what about aggregated components?
                 attack.TargetInRange = new BoolReactiveProperty();//-
 
@@ -30,7 +28,9 @@ namespace AlphaECS.SurvivalShooter {
         void SetTargetOnCollision(MeleeAttack attack, Collider collider) {
             collider.OnTriggerEnterAsObservable().Subscribe(targetCollider => {
                 var targetView = targetCollider.GetComponent<EntityBehaviour>();//name it properly etc
-                if (targetView == null || !targetView.Entity.Has<AxisInput>() || !targetView.Entity.Has<Health>()) return;
+                if (targetView == null || 
+                    !targetView.Entity.Has<AxisInput>() || 
+                    !targetView.Entity.Has<Health>()) return;
 
                 attack.Target = targetView.Entity;
                 attack.TargetInRange.Value = true;
@@ -39,7 +39,9 @@ namespace AlphaECS.SurvivalShooter {
 
             collider.OnTriggerExitAsObservable().Subscribe(targetCollider => {
                 var targetView = targetCollider.GetComponent<EntityBehaviour>();//-
-                if (targetView == null || !targetView.Entity.Has<AxisInput>() || !targetView.Entity.Has<Health>()) return;
+                if (targetView == null || 
+                    !targetView.Entity.Has<AxisInput>() || 
+                    !targetView.Entity.Has<Health>()) return;
 
                 attack.Target = null;
                 attack.TargetInRange.Value = false;

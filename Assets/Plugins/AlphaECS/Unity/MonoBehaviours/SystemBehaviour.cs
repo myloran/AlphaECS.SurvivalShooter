@@ -9,9 +9,12 @@ namespace AlphaECS.Unity
 {
     public abstract class SystemBehaviour : MonoBehaviour, ISystem, IDisposableContainer, IDisposable
     {
-		public IEventSystem EventSystem { get; set; }
-		public IPoolManager PoolManager { get; set; }
-		public GroupFactory GroupFactory { get; set; }
+        [Inject]
+        public IEventSystem EventSystem { get; set; }
+        [Inject]
+        public IPoolManager PoolManager { get; set; }
+        [Inject]
+        public GroupFactory GroupFactory { get; set; }
 
 		[Inject]
         public PrefabFactory PrefabFactory { get; set; }
@@ -22,14 +25,9 @@ namespace AlphaECS.Unity
             get { return _disposer; }
             private set { _disposer = value; }
         }
-			
+
         [Inject]
-		public virtual void Initialize(IEventSystem eventSystem, IPoolManager poolManager, GroupFactory groupFactory)
-        {
-			EventSystem = eventSystem;
-			PoolManager = poolManager;
-			GroupFactory = groupFactory;
-        }
+        public virtual void Initialize() {}
 
 		public virtual void OnEnable() { }
 

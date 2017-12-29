@@ -94,10 +94,7 @@ namespace AlphaECS.Unity
 		}
 		private IPoolManager poolManager;
 
-		public override void Initialize (IEventSystem eventSystem)
-		{
-			base.Initialize (eventSystem);
-		}
+		public override void Initialize () { }
 
 		/* TODO
 		 * this gets us around the "force enable" issue but
